@@ -13,7 +13,7 @@ import {
 } from './components'
 import { useDropzone } from 'react-dropzone'
 
-const VALIDATOR_URL = 'https://jats-validator-uaonja2a3q-uc.a.run.app'
+const VALIDATOR_URL = 'https://jats-validator.onrender.com'
 
 const validate = (xml, type) => {
   const body = new FormData()
