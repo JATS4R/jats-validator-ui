@@ -20,6 +20,10 @@ const Validation = styled.div`
     border-bottom: 1px solid #eee;
   }
 
+  &:hover {
+    background: #e8f2ff;
+  }
+
   & svg {
     height: 16px;
     width: 16px;
