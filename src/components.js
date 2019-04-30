@@ -1,4 +1,3 @@
-import CircularProgress from '@material-ui/core/CircularProgress'
 import styled from 'styled-components'
 
 export const Container = styled.div`
@@ -37,16 +36,4 @@ export const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 44px;
-`
-
-export const ButtonContainer = styled.span`
-  position: relative;
-`
-
-export const Progress = styled(CircularProgress)`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -12px;
-  margin-left: -12px;
 `

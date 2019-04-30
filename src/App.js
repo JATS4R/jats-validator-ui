@@ -3,14 +3,7 @@ import Validations from './Validations'
 import CodeMirror from './codemirror'
 import Button from '@material-ui/core/Button'
 import Input from '@material-ui/core/Input'
-import {
-  ButtonContainer,
-  Container,
-  Header,
-  Main,
-  Sidebar,
-  Progress,
-} from './components'
+import { Container, Header, Main, Sidebar } from './components'
 import { useDropzone } from 'react-dropzone'
 
 const VALIDATOR_URL = 'https://jats-validator.onrender.com'
@@ -217,58 +210,23 @@ export const App = () => {
           <b>JATS4R Validator</b>
 
           <Input inputProps={getInputProps({ style: { display: 'flex' } })} />
-
-          {/*{xml ? (
-            <div>
-              <ButtonContainer>
-                <Button
-                  mini={true}
-                  color={'secondary'}
-                  disabled={formatting}
-                  onClick={() => format()}
-                >
-                  Indent
-                </Button>
-                {formatting && <Progress size={24} />}
-              </ButtonContainer>
-
-              <Button
-                mini={true}
-                color={'secondary'}
-                onClick={() => {
-                  editor.setValue('')
-                }}
-              >
-                Reset
-              </Button>
-            </div>
-          ) : (
-            <Input inputProps={getInputProps({ style: { display: 'flex' } })} />
-          )}*/}
         </Header>
 
         <textarea ref={editorRef} />
       </Main>
 
       <Sidebar>
-        <Header>
-          <b>Validations</b>
+        {validating ? (
+          <div>Validating…</div>
+        ) : (
+          <>
+            <Header>
+              <b>Validations</b>
+            </Header>
 
-          {xml && (
-            <ButtonContainer>
-              <Button
-                color="primary"
-                disabled={validating}
-                onClick={() => editor.performLint()}
-              >
-                Validate
-              </Button>
-              {validating && <Progress size={24} />}
-            </ButtonContainer>
-          )}
-        </Header>
-
-        <Validations data={data} scrollTo={scrollTo} />
+            <Validations data={data} scrollTo={scrollTo} />
+          </>
+        )}
       </Sidebar>
     </Container>
   )
