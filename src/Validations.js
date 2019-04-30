@@ -9,6 +9,10 @@ const Container = styled.div`
   overflow-y: auto;
 `
 
+const ValidationGroup = styled.details`
+  padding: 0 16px;
+`
+
 const Validation = styled.div`
   padding: 8px 16px;
   cursor: pointer;
@@ -52,29 +56,45 @@ export default ({ data: { dtd, schematron }, scrollTo }) => (
       <Section>
         <Header>DTD</Header>
         <div>
-          {dtd.errors &&
-            dtd.errors.map((item, index) => (
-              <Validation
-                key={`item-${index}`}
-                onClick={() => scrollTo(item.line - 1)}
-              >
-                <ErrorIcon color="error" />
-                <Name>{item.message}</Name>
-              </Validation>
-            ))}
+          {dtd.errors && dtd.errors.length > 0 && (
+            <ValidationGroup open={dtd.errors.length > 0}>
+              <summary style={{ color: 'red' }}>
+                {dtd.errors.length}{' '}
+                {dtd.errors.length === 1 ? 'error' : 'errors'}
+              </summary>
 
-          {dtd.warnings &&
-            dtd.warnings.map((item, index) => (
-              <Validation
-                key={`item-${index}`}
-                onClick={() => scrollTo(item.line - 1)}
-              >
-                <WarningIcon style={{ color: 'orange' }} />
-                <Name>
-                  {item.name} :{item.message}
-                </Name>
-              </Validation>
-            ))}
+              {dtd.errors.map((item, index) => (
+                <Validation
+                  key={`item-${index}`}
+                  onClick={() => scrollTo(item.line - 1)}
+                >
+                  <ErrorIcon color="error" />
+                  <Name>{item.message}</Name>
+                </Validation>
+              ))}
+            </ValidationGroup>
+          )}
+
+          {dtd.warnings && dtd.warnings.length > 0 && (
+            <ValidationGroup open={dtd.warnings.length > 0}>
+              <summary style={{ color: 'orange' }}>
+                {dtd.warnings.length}{' '}
+                {dtd.warnings.length === 1 ? 'warning' : 'warnings'}
+              </summary>
+
+              {dtd.warnings.map((item, index) => (
+                <Validation
+                  key={`item-${index}`}
+                  onClick={() => scrollTo(item.line - 1)}
+                >
+                  <WarningIcon style={{ color: 'orange' }} />
+                  <Name>
+                    {item.name} :{item.message}
+                  </Name>
+                </Validation>
+              ))}
+            </ValidationGroup>
+          )}
         </div>
       </Section>
     )}
@@ -83,38 +103,62 @@ export default ({ data: { dtd, schematron }, scrollTo }) => (
       <Section>
         <Header>Schematron</Header>
         <div>
-          {schematron.errors &&
-            schematron.errors.map((item, index) => (
-              <Validation
-                key={`item-${index}`}
-                onClick={() => scrollTo(item.line - 1)}
-              >
-                <ErrorIcon color="error" />
-                <Name>{item.description.replace(/^ERROR: /, '')}</Name>
-              </Validation>
-            ))}
+          {schematron.errors && schematron.errors.length > 0 && (
+            <ValidationGroup open={schematron.errors.length > 0}>
+              <summary style={{ color: 'red' }}>
+                {schematron.errors.length}{' '}
+                {schematron.errors.length === 1 ? 'error' : 'errors'}
+              </summary>
 
-          {schematron.warnings &&
-            schematron.warnings.map((item, index) => (
-              <Validation
-                key={`item-${index}`}
-                onClick={() => scrollTo(item.line - 1)}
-              >
-                <WarningIcon style={{ color: 'orange' }} />
-                <Name>{item.description.replace(/^ERROR: /, '')}</Name>
-              </Validation>
-            ))}
+              {schematron.errors.map((item, index) => (
+                <Validation
+                  key={`item-${index}`}
+                  onClick={() => scrollTo(item.line - 1)}
+                >
+                  <ErrorIcon color="error" />
+                  <Name>{item.description.replace(/^ERROR: /, '')}</Name>
+                </Validation>
+              ))}
+            </ValidationGroup>
+          )}
 
-          {schematron.passed &&
-            schematron.passed.map((item, index) => (
-              <Validation
-                key={`item-${index}`}
-                onClick={() => scrollTo(item.line - 1)}
-              >
-                <CheckCircleIcon style={{ color: 'green' }} />
-                <Name>{item.description.replace(/^ERROR: /, '')}</Name>
-              </Validation>
-            ))}
+          {schematron.warnings && schematron.warnings.length > 0 && (
+            <ValidationGroup open={schematron.warnings.length > 0}>
+              <summary style={{ color: 'orange' }}>
+                {schematron.warnings.length}{' '}
+                {schematron.warnings.length === 1 ? 'warning' : 'warnings'}
+              </summary>
+
+              {schematron.warnings.map((item, index) => (
+                <Validation
+                  key={`item-${index}`}
+                  onClick={() => scrollTo(item.line - 1)}
+                >
+                  <WarningIcon style={{ color: 'orange' }} />
+                  <Name>{item.description.replace(/^ERROR: /, '')}</Name>
+                </Validation>
+              ))}
+            </ValidationGroup>
+          )}
+
+          {schematron.passed && schematron.passed.length > 0 && (
+            <ValidationGroup open={false}>
+              <summary style={{ color: 'green' }}>
+                {schematron.passed.length}{' '}
+                {schematron.passed.length === 1 ? 'pass' : 'passes'}
+              </summary>
+
+              {schematron.passed.map((item, index) => (
+                <Validation
+                  key={`item-${index}`}
+                  onClick={() => scrollTo(item.line - 1)}
+                >
+                  <CheckCircleIcon style={{ color: 'green' }} />
+                  <Name>{item.description.replace(/^ERROR: /, '')}</Name>
+                </Validation>
+              ))}
+            </ValidationGroup>
+          )}
         </div>
       </Section>
     )}
