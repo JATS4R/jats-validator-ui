@@ -216,7 +216,9 @@ export const App = () => {
         <Header>
           <b>JATS4R Validator</b>
 
-          {xml ? (
+          <Input inputProps={getInputProps({ style: { display: 'flex' } })} />
+
+          {/*{xml ? (
             <div>
               <ButtonContainer>
                 <Button
@@ -241,16 +243,8 @@ export const App = () => {
               </Button>
             </div>
           ) : (
-            <Input inputProps={getInputProps({ style: { display: 'flex' } })}>
-              <svg width="24" height="24">
-                <path
-                  d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"
-                  style={{ fill: 'currentColor' }}
-                />
-              </svg>
-              {isDragActive ? 'Drop' : 'Upload'}
-            </Input>
-          )}
+            <Input inputProps={getInputProps({ style: { display: 'flex' } })} />
+          )}*/}
         </Header>
 
         <textarea ref={editorRef} />
