@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import Validations from './Validations'
 import CodeMirror from './codemirror'
-import Button from '@material-ui/core/Button'
 import Input from '@material-ui/core/Input'
 import { Container, Header, Main, Sidebar } from './components'
 import { useDropzone } from 'react-dropzone'
@@ -35,20 +34,22 @@ const useDebounce = (value, delay) => {
 
 export const App = () => {
   const [editor, setEditor] = useState(undefined)
-  const [formatting, setFormatting] = useState(false)
+  // const [formatting, setFormatting] = useState(false)
   const [validating, setValidating] = useState(false)
-  const [data, setData] = useState({})
+  const [data, setData] = useState()
   const [xml, setXML] = useState()
 
   const debouncedXML = useDebounce(xml, 1000)
 
   const onDrop = useCallback(
     acceptedFiles => {
-      const reader = new FileReader()
-      reader.onload = () => {
-        editor.setValue(reader.result)
+      if (acceptedFiles.length) {
+        const reader = new FileReader()
+        reader.onload = () => {
+          editor.setValue(reader.result)
+        }
+        reader.readAsText(acceptedFiles[0])
       }
-      reader.readAsText(acceptedFiles[0])
     },
     [editor]
   )
@@ -60,20 +61,20 @@ export const App = () => {
     onDrop,
   })
 
-  const format = useCallback(() => {
-    setFormatting(true)
-
-    const body = new FormData()
-    body.set('xml', editor.getValue())
-
-    fetch(`${VALIDATOR_URL}/format`, { method: 'POST', body })
-      .then(response => response.text())
-      .then(xml => {
-        editor.setValue(xml)
-        setFormatting(false)
-        setXML(xml)
-      })
-  }, [editor, setXML])
+  // const format = useCallback(() => {
+  //   setFormatting(true)
+  //
+  //   const body = new FormData()
+  //   body.set('xml', editor.getValue())
+  //
+  //   fetch(`${VALIDATOR_URL}/format`, { method: 'POST', body })
+  //     .then(response => response.text())
+  //     .then(xml => {
+  //       editor.setValue(xml)
+  //       setFormatting(false)
+  //       setXML(xml)
+  //     })
+  // }, [editor, setXML])
 
   useEffect(() => {
     if (debouncedXML) {
@@ -83,7 +84,7 @@ export const App = () => {
 
   const getAnnotations = useCallback(
     (source, updateLinting) => {
-      setData({})
+      setData(undefined)
 
       if (!source) {
         return
@@ -168,6 +169,7 @@ export const App = () => {
           'CodeMirror-linenumbers',
           'CodeMirror-foldgutter',
         ],
+        placeholder: 'Enter JATS XML or choose a file above…',
         styleActiveLine: true,
         matchTags: {
           bothTags: true,
@@ -209,16 +211,23 @@ export const App = () => {
         <Header>
           <b>JATS4R Validator</b>
 
-          <Input inputProps={getInputProps({ style: { display: 'flex' } })} />
+          <Input
+            inputProps={getInputProps({
+              style: { display: 'flex' },
+              onClick: event => {
+                event.target.value = ''
+              },
+            })}
+          />
         </Header>
 
         <textarea ref={editorRef} />
       </Main>
 
       <Sidebar>
-        {validating ? (
-          <div>Validating…</div>
-        ) : (
+        {validating && <Header>Validating…</Header>}
+
+        {data && (
           <>
             <Header>
               <b>Validations</b>

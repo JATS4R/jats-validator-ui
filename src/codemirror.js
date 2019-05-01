@@ -1,6 +1,7 @@
 import CodeMirror from 'codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/xml/xml'
+import 'codemirror/addon/display/placeholder'
 import 'codemirror/addon/edit/matchtags'
 import 'codemirror/addon/fold/foldcode'
 import 'codemirror/addon/fold/foldgutter'
