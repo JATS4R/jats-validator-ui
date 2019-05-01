@@ -1,0 +1,6 @@
+*
+!public
+!public/**/*
+!src
+!src/**/*
+!*.json
