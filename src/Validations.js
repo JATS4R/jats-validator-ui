@@ -144,8 +144,7 @@ export default ({ data: { dtd, schematron }, scrollTo }) => (
           {schematron.passed && schematron.passed.length > 0 && (
             <ValidationGroup open={false}>
               <summary style={{ color: 'green' }}>
-                {schematron.passed.length}{' '}
-                {schematron.passed.length === 1 ? 'pass' : 'passes'}
+                {schematron.passed.length} passed
               </summary>
 
               {schematron.passed.map((item, index) => (

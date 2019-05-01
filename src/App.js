@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import Validations from './Validations'
 import CodeMirror from './codemirror'
-import Input from '@material-ui/core/Input'
 import { Container, Header, Main, Sidebar } from './components'
 import { useDropzone } from 'react-dropzone'
 
@@ -211,13 +210,12 @@ export const App = () => {
         <Header>
           <b>JATS4R Validator</b>
 
-          <Input
-            inputProps={getInputProps({
-              style: { display: 'flex' },
-              onClick: event => {
-                event.target.value = ''
-              },
-            })}
+          <input
+            {...getInputProps()}
+            style={{ display: 'initial' }}
+            onMouseDown={event => {
+              event.target.value = ''
+            }}
           />
         </Header>
 

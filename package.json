@@ -4,7 +4,6 @@
   "private": true,
   "license": "MIT",
   "dependencies": {
-    "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.1",
     "codemirror": "^5.46.0",
     "react": "^16.8.6",
@@ -18,8 +17,7 @@
     "build": "react-scripts build"
   },
   "browserslist": [
-    "last 2 years",
-    ">10%"
+    "last 2 years"
   ],
   "prettier": {
     "semi": false,
