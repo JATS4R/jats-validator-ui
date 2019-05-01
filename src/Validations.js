@@ -6,11 +6,23 @@ const Container = styled.div`
   overflow-y: auto;
 `
 
-const ValidationGroup = styled.details`
-  padding: 0 16px;
+const Section = styled.div`
+  margin: 32px 0 0 16px;
+`
 
+const Header = styled.div`
+  font-size: 120%;
+  margin-bottom: 8px;
+`
+
+const ValidationGroup = styled.details`
   summary {
     margin: 8px 0;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
   }
 `
 
@@ -41,64 +53,66 @@ const Validation = styled.div`
   }
 `
 
-const Section = styled.div`
-  &:not(:first-of-type) {
-    margin-top: 16px;
-  }
-`
+const hasError = results => {
+  const types = ['errors', 'warnings', 'passed']
 
-const Header = styled.div`
-  padding: 0 16px;
-  font-size: 120%;
-  margin-bottom: 8px;
-`
+  for (const type of types) {
+    if (results[type] && results[type].length) {
+      return true
+    }
+  }
+}
 
 export default ({ data: { dtd, schematron }, scrollTo }) => (
   <Container>
     {dtd && (
       <Section>
         <Header>DTD</Header>
-        <div>
-          {dtd.errors && dtd.errors.length > 0 && (
-            <ValidationGroup open={dtd.errors.length > 0}>
-              <summary style={{ color: 'red' }}>
-                {dtd.errors.length}{' '}
-                {dtd.errors.length === 1 ? 'error' : 'errors'}
-              </summary>
 
-              {dtd.errors.map((item, index) => (
-                <Validation
-                  key={`item-${index}`}
-                  onClick={() => scrollTo(item.line - 1)}
-                  color={'red'}
-                >
-                  <Message>{item.message}</Message>
-                </Validation>
-              ))}
-            </ValidationGroup>
-          )}
+        {!hasError(dtd) && (
+          <Validation color={'green'}>
+            <Message>DTD validation passed</Message>
+          </Validation>
+        )}
 
-          {dtd.warnings && dtd.warnings.length > 0 && (
-            <ValidationGroup open={dtd.warnings.length > 0}>
-              <summary style={{ color: 'orange' }}>
-                {dtd.warnings.length}{' '}
-                {dtd.warnings.length === 1 ? 'warning' : 'warnings'}
-              </summary>
+        {dtd.errors && dtd.errors.length > 0 && (
+          <ValidationGroup open={dtd.errors.length > 0}>
+            <summary style={{ color: 'red' }}>
+              {dtd.errors.length} {dtd.errors.length === 1 ? 'error' : 'errors'}
+            </summary>
 
-              {dtd.warnings.map((item, index) => (
-                <Validation
-                  key={`item-${index}`}
-                  onClick={() => scrollTo(item.line - 1)}
-                  color={'orange'}
-                >
-                  <Message>
-                    {item.name}: {item.message}
-                  </Message>
-                </Validation>
-              ))}
-            </ValidationGroup>
-          )}
-        </div>
+            {dtd.errors.map((item, index) => (
+              <Validation
+                key={`item-${index}`}
+                onClick={() => scrollTo(item.line - 1)}
+                color={'red'}
+              >
+                <Message>{item.message}</Message>
+              </Validation>
+            ))}
+          </ValidationGroup>
+        )}
+
+        {dtd.warnings && dtd.warnings.length > 0 && (
+          <ValidationGroup open={dtd.warnings.length > 0}>
+            <summary style={{ color: 'orange' }}>
+              {dtd.warnings.length}{' '}
+              {dtd.warnings.length === 1 ? 'warning' : 'warnings'}
+            </summary>
+
+            {dtd.warnings.map((item, index) => (
+              <Validation
+                key={`item-${index}`}
+                onClick={() => scrollTo(item.line - 1)}
+                color={'orange'}
+              >
+                <Message>
+                  {item.name}: {item.message}
+                </Message>
+              </Validation>
+            ))}
+          </ValidationGroup>
+        )}
       </Section>
     )}
 
@@ -147,7 +161,7 @@ export default ({ data: { dtd, schematron }, scrollTo }) => (
           {schematron.passed && schematron.passed.length > 0 && (
             <ValidationGroup open={false}>
               <summary style={{ color: 'green' }}>
-                {schematron.passed.length} passed
+                {schematron.passed.length} tests passed
               </summary>
 
               {schematron.passed.map((item, index) => (

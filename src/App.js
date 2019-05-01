@@ -54,7 +54,7 @@ export const App = () => {
     [editor]
   )
 
-  const { getRootProps, getInputProps } = useDropzone({
+  const { getInputProps } = useDropzone({
     accept: '.xml',
     multiple: false,
     noClick: true,
@@ -178,6 +178,9 @@ export const App = () => {
           getAnnotations,
           lintOnChange: false,
         },
+        extraKeys: {
+          Tab: false,
+        },
       })
 
       editor.on('change', handleChange)
@@ -215,7 +218,7 @@ export const App = () => {
   }
 
   return (
-    <Container {...getRootProps()}>
+    <Container>
       <Main>
         <Header>
           <Logo>
@@ -239,13 +242,7 @@ export const App = () => {
       <Sidebar>
         {validating && <Header>Validating…</Header>}
 
-        {data && (
-          <>
-            <Header>Validations</Header>
-
-            <Validations data={data} scrollTo={scrollTo} />
-          </>
-        )}
+        {data && <Validations data={data} scrollTo={scrollTo} />}
       </Sidebar>
     </Container>
   )
