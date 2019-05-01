@@ -216,14 +216,15 @@ export const App = () => {
 
           <input
             {...getInputProps()}
-            style={{ display: 'initial' }}
+            tabIndex={1}
+            style={{ display: 'flex' }}
             onMouseDown={event => {
               event.target.value = ''
             }}
           />
         </Header>
 
-        <textarea ref={editorRef} />
+        <textarea ref={editorRef} tabIndex={2} />
       </Main>
 
       <Sidebar>

@@ -1,8 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import CheckCircleIcon from '@material-ui/icons/CheckCircle'
-import ErrorIcon from '@material-ui/icons/Error'
-import WarningIcon from '@material-ui/icons/Warning'
 
 const Container = styled.div`
   flex: 1;
@@ -17,26 +14,30 @@ const ValidationGroup = styled.details`
   }
 `
 
-const Validation = styled.div`
+const Message = styled.div`
   padding: 8px 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: start;
-  font-size: 90%;
-  background: #f6f6f6;
-  transition: 0.2s background-color;
+`
 
-  border-top: 1px solid #fff;
-  border-left: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
+const Validation = styled.div`
+  cursor: pointer;
+  font-size: 90%;
+  background: none;
+  transition: 0.2s transform;
+
+  margin-bottom: 3px;
+  box-shadow: 0 1px 4px #ddd;
 
   &:hover {
-    background-color: #e8f2ff;
+    transform: translateX(-16px);
   }
 
   & svg {
     height: 16px;
     width: 16px;
+  }
+
+  & ${Message} {
+    border-left: 5px solid ${props => props.color};
   }
 `
 
@@ -50,10 +51,6 @@ const Header = styled.div`
   padding: 0 16px;
   font-size: 120%;
   margin-bottom: 8px;
-`
-
-const Name = styled.div`
-  margin-left: 8px;
 `
 
 export default ({ data: { dtd, schematron }, scrollTo }) => (
@@ -73,9 +70,9 @@ export default ({ data: { dtd, schematron }, scrollTo }) => (
                 <Validation
                   key={`item-${index}`}
                   onClick={() => scrollTo(item.line - 1)}
+                  color={'red'}
                 >
-                  <ErrorIcon color="error" />
-                  <Name>{item.message}</Name>
+                  <Message>{item.message}</Message>
                 </Validation>
               ))}
             </ValidationGroup>
@@ -92,11 +89,11 @@ export default ({ data: { dtd, schematron }, scrollTo }) => (
                 <Validation
                   key={`item-${index}`}
                   onClick={() => scrollTo(item.line - 1)}
+                  color={'orange'}
                 >
-                  <WarningIcon style={{ color: 'orange' }} />
-                  <Name>
-                    {item.name} :{item.message}
-                  </Name>
+                  <Message>
+                    {item.name}: {item.message}
+                  </Message>
                 </Validation>
               ))}
             </ValidationGroup>
@@ -120,9 +117,9 @@ export default ({ data: { dtd, schematron }, scrollTo }) => (
                 <Validation
                   key={`item-${index}`}
                   onClick={() => scrollTo(item.line - 1)}
+                  color={'red'}
                 >
-                  <ErrorIcon color="error" />
-                  <Name>{item.description.replace(/^ERROR: /, '')}</Name>
+                  <Message>{item.description.replace(/^ERROR: /, '')}</Message>
                 </Validation>
               ))}
             </ValidationGroup>
@@ -139,9 +136,9 @@ export default ({ data: { dtd, schematron }, scrollTo }) => (
                 <Validation
                   key={`item-${index}`}
                   onClick={() => scrollTo(item.line - 1)}
+                  color={'orange'}
                 >
-                  <WarningIcon style={{ color: 'orange' }} />
-                  <Name>{item.description.replace(/^ERROR: /, '')}</Name>
+                  <Message>{item.description.replace(/^ERROR: /, '')}</Message>
                 </Validation>
               ))}
             </ValidationGroup>
@@ -157,9 +154,9 @@ export default ({ data: { dtd, schematron }, scrollTo }) => (
                 <Validation
                   key={`item-${index}`}
                   onClick={() => scrollTo(item.line - 1)}
+                  color={'green'}
                 >
-                  <CheckCircleIcon style={{ color: 'green' }} />
-                  <Name>{item.description.replace(/^ERROR: /, '')}</Name>
+                  <Message>{item.description.replace(/^ERROR: /, '')}</Message>
                 </Validation>
               ))}
             </ValidationGroup>
