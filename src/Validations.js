@@ -11,6 +11,10 @@ const Container = styled.div`
 
 const ValidationGroup = styled.details`
   padding: 0 16px;
+
+  summary {
+    margin: 8px 0;
+  }
 `
 
 const Validation = styled.div`
@@ -19,13 +23,15 @@ const Validation = styled.div`
   display: flex;
   align-items: start;
   font-size: 90%;
+  background: #f6f6f6;
+  transition: 0.2s background-color;
 
-  &:not(:last-child) {
-    border-bottom: 1px solid #eee;
-  }
+  border-top: 1px solid #fff;
+  border-left: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
 
   &:hover {
-    background: #e8f2ff;
+    background-color: #e8f2ff;
   }
 
   & svg {
@@ -36,13 +42,13 @@ const Validation = styled.div`
 
 const Section = styled.div`
   &:not(:first-of-type) {
-    margin-top: 8px;
+    margin-top: 16px;
   }
 `
 
 const Header = styled.div`
   padding: 0 16px;
-  font-weight: bold;
+  font-size: 120%;
   margin-bottom: 8px;
 `
 

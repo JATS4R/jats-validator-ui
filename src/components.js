@@ -40,6 +40,7 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 120%;
 `
 
 export const Brand = styled.span`

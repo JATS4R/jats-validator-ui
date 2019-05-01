@@ -231,9 +231,7 @@ export const App = () => {
 
         {data && (
           <>
-            <Header>
-              <b>Validations</b>
-            </Header>
+            <Header>Validations</Header>
 
             <Validations data={data} scrollTo={scrollTo} />
           </>
