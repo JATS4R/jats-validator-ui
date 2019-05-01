@@ -53,7 +53,7 @@ export const App = () => {
     [editor]
   )
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     accept: '.xml',
     multiple: false,
     noClick: true,
