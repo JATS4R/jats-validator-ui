@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import Validations from './Validations'
 import CodeMirror from './codemirror'
-import { Container, Header, Main, Sidebar } from './components'
+import { Brand, Container, Header, Logo, Main, Sidebar } from './components'
 import { useDropzone } from 'react-dropzone'
+import logo from './logo.png'
 
 const VALIDATOR_URL = 'https://jats-validator.onrender.com'
 
@@ -208,7 +209,10 @@ export const App = () => {
     <Container {...getRootProps()}>
       <Main>
         <Header>
-          <b>JATS4R Validator</b>
+          <Logo>
+            <img src={logo} alt={'JATS4R logo'} height={32} />
+            <Brand>Validator</Brand>
+          </Logo>
 
           <input
             {...getInputProps()}

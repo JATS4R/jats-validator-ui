@@ -7,7 +7,8 @@ export const Container = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  font-family: sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Helvetica Neue', Arial, sans-serif;
 `
 
 export const Main = styled.div`
@@ -19,6 +20,10 @@ export const Main = styled.div`
 
   .CodeMirror {
     flex: 1;
+
+    pre.CodeMirror-placeholder {
+      color: #777;
+    }
   }
 `
 
@@ -31,9 +36,21 @@ export const Sidebar = styled.div`
 `
 
 export const Header = styled.div`
-  padding: 4px 16px;
+  padding: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 44px;
+`
+
+export const Brand = styled.span`
+  //font-weight: bold;
+`
+
+export const Logo = styled.div`
+  display: flex;
+  align-items: center;
+
+  ${Brand} {
+    margin-left: 1ch;
+  }
 `
