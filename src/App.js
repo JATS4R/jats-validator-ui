@@ -187,7 +187,7 @@ export const App = () => {
 
       setEditor(editor)
 
-      const params = new URLSearchParams(window.location.search.substr(1))
+      const params = new URLSearchParams(window.location.hash.substr(1))
 
       if (params.get('url')) {
         fetch(params.get('url'))
