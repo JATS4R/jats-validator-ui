@@ -72,7 +72,6 @@ export const App = () => {
   //     .then(xml => {
   //       editor.setValue(xml)
   //       setFormatting(false)
-  //       setXML(xml)
   //     })
   // }, [editor, setXML])
 
@@ -184,6 +183,16 @@ export const App = () => {
       editor.on('change', handleChange)
 
       setEditor(editor)
+
+      const params = new URLSearchParams(window.location.search.substr(1))
+
+      if (params.get('url')) {
+        fetch(params.get('url'))
+          .then(response => response.text())
+          .then(xml => {
+            editor.setValue(xml)
+          })
+      }
     }
   }, [editor, editorRef, getAnnotations, handleChange])
 
