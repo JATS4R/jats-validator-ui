@@ -16,6 +16,15 @@ const validate = (xml, type) => {
   )
 }
 
+const format = blob => {
+  const body = new FormData()
+  body.set('xml', blob)
+
+  return fetch(`${VALIDATOR_URL}/format`, { method: 'POST', body }).then(
+    response => response.text()
+  )
+}
+
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value)
 
@@ -43,11 +52,9 @@ export const App = () => {
   const onDrop = useCallback(
     acceptedFiles => {
       if (acceptedFiles.length) {
-        const reader = new FileReader()
-        reader.onload = () => {
-          editor.setValue(reader.result)
-        }
-        reader.readAsText(acceptedFiles[0])
+        format(acceptedFiles[0]).then(xml => {
+          editor.setValue(xml)
+        })
       }
     },
     [editor]
@@ -204,7 +211,7 @@ export const App = () => {
       <Main>
         <Header>
           <Logo>
-            <img src={logo} alt={'JATS4R logo'} height={32} />
+            <img src={logo} alt={'JATS4R logo'} height={64} />
             <Brand>Validator</Brand>
           </Logo>
 
