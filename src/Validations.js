@@ -63,25 +63,30 @@ const hasError = results => {
   }
 }
 
-export default ({ data: { dtd, schematron }, scrollTo }) => (
+export default ({ dtdResults, schematronResults, scrollTo }) => (
   <Container>
-    {dtd && (
+    {dtdResults && (
       <Section>
         <Header>DTD</Header>
 
-        {!hasError(dtd) && (
-          <Validation color={'green'}>
-            <Message>DTD validation passed</Message>
-          </Validation>
+        {dtdResults.running ? (
+          <div>Running…</div>
+        ) : (
+          !hasError(dtdResults) && (
+            <Validation color={'green'}>
+              <Message>DTD validation passed</Message>
+            </Validation>
+          )
         )}
 
-        {dtd.errors && dtd.errors.length > 0 && (
-          <ValidationGroup open={dtd.errors.length > 0}>
+        {dtdResults.errors && dtdResults.errors.length > 0 && (
+          <ValidationGroup open={dtdResults.errors.length > 0}>
             <summary style={{ color: 'red' }}>
-              {dtd.errors.length} {dtd.errors.length === 1 ? 'error' : 'errors'}
+              {dtdResults.errors.length}{' '}
+              {dtdResults.errors.length === 1 ? 'error' : 'errors'}
             </summary>
 
-            {dtd.errors.map((item, index) => (
+            {dtdResults.errors.map((item, index) => (
               <Validation
                 key={`item-${index}`}
                 onClick={() => scrollTo(item.line - 1)}
@@ -93,14 +98,14 @@ export default ({ data: { dtd, schematron }, scrollTo }) => (
           </ValidationGroup>
         )}
 
-        {dtd.warnings && dtd.warnings.length > 0 && (
-          <ValidationGroup open={dtd.warnings.length > 0}>
+        {dtdResults.warnings && dtdResults.warnings.length > 0 && (
+          <ValidationGroup open={dtdResults.warnings.length > 0}>
             <summary style={{ color: 'orange' }}>
-              {dtd.warnings.length}{' '}
-              {dtd.warnings.length === 1 ? 'warning' : 'warnings'}
+              {dtdResults.warnings.length}{' '}
+              {dtdResults.warnings.length === 1 ? 'warning' : 'warnings'}
             </summary>
 
-            {dtd.warnings.map((item, index) => (
+            {dtdResults.warnings.map((item, index) => (
               <Validation
                 key={`item-${index}`}
                 onClick={() => scrollTo(item.line - 1)}
@@ -116,24 +121,28 @@ export default ({ data: { dtd, schematron }, scrollTo }) => (
       </Section>
     )}
 
-    {schematron && (
+    {schematronResults && (
       <Section>
         <Header>Schematron</Header>
 
-        {!hasError(schematron) && (
-          <Validation color={'green'}>
-            <Message>Schematron validation passed</Message>
-          </Validation>
+        {schematronResults.running ? (
+          <div>Running…</div>
+        ) : (
+          !hasError(schematronResults) && (
+            <Validation color={'green'}>
+              <Message>Schematron validation passed</Message>
+            </Validation>
+          )
         )}
 
-        {schematron.errors && schematron.errors.length > 0 && (
-          <ValidationGroup open={schematron.errors.length > 0}>
+        {schematronResults.errors && schematronResults.errors.length > 0 && (
+          <ValidationGroup open={schematronResults.errors.length > 0}>
             <summary style={{ color: 'red' }}>
-              {schematron.errors.length}{' '}
-              {schematron.errors.length === 1 ? 'error' : 'errors'}
+              {schematronResults.errors.length}{' '}
+              {schematronResults.errors.length === 1 ? 'error' : 'errors'}
             </summary>
 
-            {schematron.errors.map((item, index) => (
+            {schematronResults.errors.map((item, index) => (
               <Validation
                 key={`item-${index}`}
                 onClick={() => scrollTo(item.line - 1)}
@@ -145,14 +154,14 @@ export default ({ data: { dtd, schematron }, scrollTo }) => (
           </ValidationGroup>
         )}
 
-        {schematron.warnings && schematron.warnings.length > 0 && (
-          <ValidationGroup open={schematron.warnings.length > 0}>
+        {schematronResults.warnings && schematronResults.warnings.length > 0 && (
+          <ValidationGroup open={schematronResults.warnings.length > 0}>
             <summary style={{ color: 'orange' }}>
-              {schematron.warnings.length}{' '}
-              {schematron.warnings.length === 1 ? 'warning' : 'warnings'}
+              {schematronResults.warnings.length}{' '}
+              {schematronResults.warnings.length === 1 ? 'warning' : 'warnings'}
             </summary>
 
-            {schematron.warnings.map((item, index) => (
+            {schematronResults.warnings.map((item, index) => (
               <Validation
                 key={`item-${index}`}
                 onClick={() => scrollTo(item.line - 1)}
@@ -163,24 +172,6 @@ export default ({ data: { dtd, schematron }, scrollTo }) => (
             ))}
           </ValidationGroup>
         )}
-
-        {/*{schematron.passed && schematron.passed.length > 0 && (
-          <ValidationGroup open={false}>
-            <summary style={{ color: 'green' }}>
-              {schematron.passed.length} tests passed
-            </summary>
-
-            {schematron.passed.map((item, index) => (
-              <Validation
-                key={`item-${index}`}
-                onClick={() => scrollTo(item.line - 1)}
-                color={'green'}
-              >
-                <Message>{item.description.replace(/^ERROR: /, '')}</Message>
-              </Validation>
-            ))}
-          </ValidationGroup>
-        )}*/}
       </Section>
     )}
   </Container>

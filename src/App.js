@@ -34,10 +34,9 @@ const useDebounce = (value, delay) => {
 
 export const App = () => {
   const [editor, setEditor] = useState(undefined)
-  // const [formatting, setFormatting] = useState(false)
-  const [validating, setValidating] = useState(false)
-  const [data, setData] = useState()
   const [xml, setXML] = useState()
+  const [dtdResults, setDtdResults] = useState()
+  const [schematronResults, setSchematronResults] = useState()
 
   const debouncedXML = useDebounce(xml, 1000)
 
@@ -61,20 +60,6 @@ export const App = () => {
     onDrop,
   })
 
-  // const format = useCallback(() => {
-  //   setFormatting(true)
-  //
-  //   const body = new FormData()
-  //   body.set('xml', editor.getValue())
-  //
-  //   fetch(`${VALIDATOR_URL}/format`, { method: 'POST', body })
-  //     .then(response => response.text())
-  //     .then(xml => {
-  //       editor.setValue(xml)
-  //       setFormatting(false)
-  //     })
-  // }, [editor, setXML])
-
   useEffect(() => {
     if (debouncedXML) {
       editor.performLint()
@@ -83,25 +68,26 @@ export const App = () => {
 
   const getAnnotations = useCallback(
     (source, updateLinting) => {
-      setData(undefined)
+      updateLinting([])
 
       if (!source) {
         return
       }
 
-      setValidating(true)
+      setDtdResults({
+        running: true,
+      })
+
+      setSchematronResults({
+        running: true,
+      })
 
       const annotations = []
-
-      const output = {
-        dtd: null,
-        schematron: null,
-      }
 
       const dtd = async () => {
         const results = await validate(source, 'dtd')
 
-        output.dtd = results
+        setDtdResults(results)
 
         const handleAnnotation = item => {
           annotations.push({
@@ -118,7 +104,7 @@ export const App = () => {
       const schematron = async () => {
         const { results } = await validate(source, 'schematron')
 
-        output.schematron = results
+        setSchematronResults(results)
 
         const handleAnnotation = item => {
           annotations.push({
@@ -131,19 +117,15 @@ export const App = () => {
 
         results.errors.forEach(handleAnnotation)
         results.warnings.forEach(handleAnnotation)
-
-        return results
       }
 
       dtd()
         .then(schematron)
         .then(() => {
-          setData(output)
           updateLinting(annotations)
-          setValidating(false)
         })
     },
-    [setData, setValidating]
+    [setDtdResults, setSchematronResults]
   )
 
   const handleChange = useCallback(
@@ -153,7 +135,7 @@ export const App = () => {
     [setXML]
   )
 
-  const editorRef = useRef()
+  const editorRef = useRef(undefined)
 
   useEffect(() => {
     if (editorRef.current && !editor) {
@@ -240,9 +222,11 @@ export const App = () => {
       </Main>
 
       <Sidebar>
-        {validating && <Header>Validating…</Header>}
-
-        {data && <Validations data={data} scrollTo={scrollTo} />}
+        <Validations
+          dtdResults={dtdResults}
+          schematronResults={schematronResults}
+          scrollTo={scrollTo}
+        />
       </Sidebar>
     </Container>
   )
