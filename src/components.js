@@ -14,6 +14,7 @@ export const Container = styled.div`
 export const Main = styled.div`
   flex: 1;
   width: 60%;
+  max-width: 60%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -30,6 +31,7 @@ export const Main = styled.div`
 export const Sidebar = styled.div`
   flex: 1;
   width: 40%;
+  max-width: 40%;
   height: 100%;
   display: flex;
   flex-direction: column;
