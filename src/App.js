@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import Validations from './Validations'
-import CodeMirror from './codemirror'
+import CodeMirror, { createEditor } from './codemirror'
 import { Brand, Container, Header, Logo, Main, Sidebar } from './components'
 import { useDropzone } from 'react-dropzone'
 import logo from './logo.png'
 
 const VALIDATOR_URL = 'https://jats-validator.onrender.com'
+
+const placeholder = 'Enter JATS XML or choose a file above…'
 
 const validate = (xml, type) => {
   const body = new FormData()
@@ -52,8 +54,12 @@ export const App = () => {
   const onDrop = useCallback(
     acceptedFiles => {
       if (acceptedFiles.length) {
+        editor.setOption('placeholder', 'Formatting XML…')
+        editor.setValue('')
+
         format(acceptedFiles[0]).then(xml => {
           editor.setValue(xml)
+          editor.setOption('placeholder', placeholder)
         })
       }
     },
@@ -77,6 +83,10 @@ export const App = () => {
     (source, updateLinting) => {
       updateLinting([])
 
+      setDtdResults(null)
+
+      setSchematronResults(null)
+
       if (!source) {
         return
       }
@@ -94,7 +104,7 @@ export const App = () => {
       const dtd = async () => {
         const results = await validate(source, 'dtd')
 
-        setDtdResults(results)
+        setDtdResults({ ...results, ready: true })
 
         const handleAnnotation = item => {
           annotations.push({
@@ -111,7 +121,7 @@ export const App = () => {
       const schematron = async () => {
         const { results } = await validate(source, 'schematron')
 
-        setSchematronResults(results)
+        setSchematronResults({ ...results, ready: true })
 
         const handleAnnotation = item => {
           annotations.push({
@@ -146,30 +156,9 @@ export const App = () => {
 
   useEffect(() => {
     if (editorRef.current && !editor) {
-      const editor = CodeMirror.fromTextArea(editorRef.current, {
-        mode: 'xml',
-        dragDrop: false,
-        foldGutter: true,
-        lineNumbers: true,
-        lineWrapping: true,
-        gutters: [
-          'CodeMirror-lint-markers',
-          'CodeMirror-linenumbers',
-          'CodeMirror-foldgutter',
-        ],
-        placeholder: 'Enter JATS XML or choose a file above…',
-        styleActiveLine: true,
-        matchTags: {
-          bothTags: true,
-        },
-        lint: {
-          async: true,
-          getAnnotations,
-          lintOnChange: false,
-        },
-        extraKeys: {
-          Tab: false,
-        },
+      const editor = createEditor(editorRef.current, {
+        getAnnotations,
+        placeholder,
       })
 
       editor.on('change', handleChange)
@@ -186,7 +175,7 @@ export const App = () => {
           })
       }
     }
-  }, [editor, editorRef, getAnnotations, handleChange])
+  }, [editor, editorRef, getAnnotations, handleChange, placeholder])
 
   const scrollTo = line => {
     if (!Number.isInteger(line)) {

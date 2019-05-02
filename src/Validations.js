@@ -4,10 +4,11 @@ import styled from 'styled-components'
 const Container = styled.div`
   flex: 1;
   overflow-y: auto;
+  padding-top: 80px;
 `
 
 const Section = styled.div`
-  margin: 32px 0 0 16px;
+  padding: 16px;
 `
 
 const Header = styled.div`
@@ -72,6 +73,7 @@ export default ({ dtdResults, schematronResults, scrollTo }) => (
         {dtdResults.running ? (
           <div>Running…</div>
         ) : (
+          dtdResults.ready &&
           !hasError(dtdResults) && (
             <Validation color={'green'}>
               <Message>DTD validation passed</Message>
@@ -79,7 +81,7 @@ export default ({ dtdResults, schematronResults, scrollTo }) => (
           )
         )}
 
-        {dtdResults.errors && dtdResults.errors.length > 0 && (
+        {dtdResults.ready && dtdResults.errors && dtdResults.errors.length > 0 && (
           <ValidationGroup open={dtdResults.errors.length > 0}>
             <summary style={{ color: 'red' }}>
               {dtdResults.errors.length}{' '}
@@ -98,26 +100,28 @@ export default ({ dtdResults, schematronResults, scrollTo }) => (
           </ValidationGroup>
         )}
 
-        {dtdResults.warnings && dtdResults.warnings.length > 0 && (
-          <ValidationGroup open={dtdResults.warnings.length > 0}>
-            <summary style={{ color: 'orange' }}>
-              {dtdResults.warnings.length}{' '}
-              {dtdResults.warnings.length === 1 ? 'warning' : 'warnings'}
-            </summary>
+        {dtdResults.ready &&
+          dtdResults.warnings &&
+          dtdResults.warnings.length > 0 && (
+            <ValidationGroup open={dtdResults.warnings.length > 0}>
+              <summary style={{ color: 'orange' }}>
+                {dtdResults.warnings.length}{' '}
+                {dtdResults.warnings.length === 1 ? 'warning' : 'warnings'}
+              </summary>
 
-            {dtdResults.warnings.map((item, index) => (
-              <Validation
-                key={`item-${index}`}
-                onClick={() => scrollTo(item.line - 1)}
-                color={'orange'}
-              >
-                <Message>
-                  {item.name}: {item.message}
-                </Message>
-              </Validation>
-            ))}
-          </ValidationGroup>
-        )}
+              {dtdResults.warnings.map((item, index) => (
+                <Validation
+                  key={`item-${index}`}
+                  onClick={() => scrollTo(item.line - 1)}
+                  color={'orange'}
+                >
+                  <Message>
+                    {item.name}: {item.message}
+                  </Message>
+                </Validation>
+              ))}
+            </ValidationGroup>
+          )}
       </Section>
     )}
 
@@ -128,6 +132,7 @@ export default ({ dtdResults, schematronResults, scrollTo }) => (
         {schematronResults.running ? (
           <div>Running…</div>
         ) : (
+          dtdResults.ready &&
           !hasError(schematronResults) && (
             <Validation color={'green'}>
               <Message>Schematron validation passed</Message>
@@ -135,43 +140,49 @@ export default ({ dtdResults, schematronResults, scrollTo }) => (
           )
         )}
 
-        {schematronResults.errors && schematronResults.errors.length > 0 && (
-          <ValidationGroup open={schematronResults.errors.length > 0}>
-            <summary style={{ color: 'red' }}>
-              {schematronResults.errors.length}{' '}
-              {schematronResults.errors.length === 1 ? 'error' : 'errors'}
-            </summary>
+        {schematronResults.ready &&
+          schematronResults.errors &&
+          schematronResults.errors.length > 0 && (
+            <ValidationGroup open={schematronResults.errors.length > 0}>
+              <summary style={{ color: 'red' }}>
+                {schematronResults.errors.length}{' '}
+                {schematronResults.errors.length === 1 ? 'error' : 'errors'}
+              </summary>
 
-            {schematronResults.errors.map((item, index) => (
-              <Validation
-                key={`item-${index}`}
-                onClick={() => scrollTo(item.line - 1)}
-                color={'red'}
-              >
-                <Message>{item.description.replace(/^ERROR: /, '')}</Message>
-              </Validation>
-            ))}
-          </ValidationGroup>
-        )}
+              {schematronResults.errors.map((item, index) => (
+                <Validation
+                  key={`item-${index}`}
+                  onClick={() => scrollTo(item.line - 1)}
+                  color={'red'}
+                >
+                  <Message>{item.description.replace(/^ERROR: /, '')}</Message>
+                </Validation>
+              ))}
+            </ValidationGroup>
+          )}
 
-        {schematronResults.warnings && schematronResults.warnings.length > 0 && (
-          <ValidationGroup open={schematronResults.warnings.length > 0}>
-            <summary style={{ color: 'orange' }}>
-              {schematronResults.warnings.length}{' '}
-              {schematronResults.warnings.length === 1 ? 'warning' : 'warnings'}
-            </summary>
+        {schematronResults.ready &&
+          schematronResults.warnings &&
+          schematronResults.warnings.length > 0 && (
+            <ValidationGroup open={schematronResults.warnings.length > 0}>
+              <summary style={{ color: 'orange' }}>
+                {schematronResults.warnings.length}{' '}
+                {schematronResults.warnings.length === 1
+                  ? 'warning'
+                  : 'warnings'}
+              </summary>
 
-            {schematronResults.warnings.map((item, index) => (
-              <Validation
-                key={`item-${index}`}
-                onClick={() => scrollTo(item.line - 1)}
-                color={'orange'}
-              >
-                <Message>{item.description.replace(/^ERROR: /, '')}</Message>
-              </Validation>
-            ))}
-          </ValidationGroup>
-        )}
+              {schematronResults.warnings.map((item, index) => (
+                <Validation
+                  key={`item-${index}`}
+                  onClick={() => scrollTo(item.line - 1)}
+                  color={'orange'}
+                >
+                  <Message>{item.description.replace(/^ERROR: /, '')}</Message>
+                </Validation>
+              ))}
+            </ValidationGroup>
+          )}
       </Section>
     )}
   </Container>
