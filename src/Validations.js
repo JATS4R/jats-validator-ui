@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import replace from 'react-string-replace'
 
 const Container = styled.div`
   flex: 1;
@@ -76,6 +77,16 @@ const hasError = results => {
       return true
     }
   }
+}
+
+const formatMessage = message => {
+  const text = message.replace(/^ERROR: /, '')
+
+  return replace(text, /(https?:\/\/[^\s,]+)/, match => (
+    <a href={match} target={'_blank'}>
+      {match}
+    </a>
+  ))
 }
 
 export default ({ dtdResults, schematronResults, scrollTo }) => (
@@ -209,7 +220,7 @@ export default ({ dtdResults, schematronResults, scrollTo }) => (
                   onClick={() => scrollTo(item.line - 1)}
                   color={'red'}
                 >
-                  <Message>{item.description.replace(/^ERROR: /, '')}</Message>
+                  <Message>{formatMessage(item.description)}</Message>
                 </Validation>
               ))}
             </ValidationGroup>
@@ -232,7 +243,7 @@ export default ({ dtdResults, schematronResults, scrollTo }) => (
                   onClick={() => scrollTo(item.line - 1)}
                   color={'orange'}
                 >
-                  <Message>{item.description.replace(/^ERROR: /, '')}</Message>
+                  <Message>{formatMessage(item.description)}</Message>
                 </Validation>
               ))}
             </ValidationGroup>

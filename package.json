@@ -9,6 +9,7 @@
     "react-dom": "^16.8.6",
     "react-dropzone": "^10.1.4",
     "react-scripts": "^3.0.0",
+    "react-string-replace": "^0.4.4",
     "styled-components": "^4.2.0"
   },
   "scripts": {
