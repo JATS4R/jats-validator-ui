@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import Validations from './Validations'
 import CodeMirror, { createEditor } from './codemirror'
 import { Brand, Container, Header, Logo, Main, Sidebar } from './components'
@@ -175,7 +175,7 @@ export const App = () => {
           })
       }
     }
-  }, [editor, editorRef, getAnnotations, handleChange, placeholder])
+  }, [editor, editorRef, getAnnotations, handleChange])
 
   const scrollTo = line => {
     if (!Number.isInteger(line)) {

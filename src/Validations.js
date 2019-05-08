@@ -68,7 +68,7 @@ export default ({ dtdResults, schematronResults, scrollTo }) => (
   <Container>
     {dtdResults && (
       <Section>
-        <Header>DTD</Header>
+        <Header>JATS DTD</Header>
 
         {dtdResults.running ? (
           <div>Running…</div>
@@ -127,7 +127,7 @@ export default ({ dtdResults, schematronResults, scrollTo }) => (
 
     {schematronResults && (
       <Section>
-        <Header>Schematron</Header>
+        <Header>JATS4R Schematron</Header>
 
         {schematronResults.running ? (
           <div>Running…</div>
