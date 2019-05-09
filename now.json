@@ -1,7 +1,7 @@
 {
   "name": "jats-validator-ui",
   "version": 2,
-  "alias": "jats-validator-ui.now.sh",
+  "alias": "validator.jats4r.org",
   "scope": "jats4r",
   "public": true,
   "builds": [
