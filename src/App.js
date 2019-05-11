@@ -1,183 +1,140 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
-import Validations from './Validations'
-import CodeMirror, { createEditor } from './codemirror'
-import { Brand, Container, Header, Logo, Main, Sidebar } from './components'
+import { Validations } from './Validations'
+import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import logo from './logo.png'
+import styled from 'styled-components'
+import { Info } from './Info'
+import { editor, placeholder } from './editor'
 
 const VALIDATOR_URL = 'https://jats-validator.onrender.com'
 
-const placeholder = 'Enter JATS XML or choose a file above…'
+const Container = styled.div`
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Helvetica Neue', Arial, sans-serif;
+`
 
-const validate = (xml, type) => {
-  const body = new FormData()
-  body.set('xml', xml)
+const Main = styled.div`
+  flex: 1;
+  width: 60%;
+  max-width: 60%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`
 
-  return fetch(`${VALIDATOR_URL}/${type}`, { method: 'POST', body }).then(
-    response => response.json()
-  )
-}
+const Editor = styled.div`
+  flex: 1;
+  overflow: hidden;
 
-const format = blob => {
-  const body = new FormData()
-  body.set('xml', blob)
+  .CodeMirror {
+    height: 100%;
 
-  return fetch(`${VALIDATOR_URL}/format`, { method: 'POST', body }).then(
-    response => response.text()
-  )
-}
-
-const useDebounce = (value, delay) => {
-  const [debouncedValue, setDebouncedValue] = useState(value)
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value)
-    }, delay)
-
-    return () => {
-      clearTimeout(handler)
+    pre.CodeMirror-placeholder {
+      color: #777;
     }
-  }, [value, delay])
+  }
+`
 
-  return debouncedValue
-}
+const Sidebar = styled.div`
+  flex: 1;
+  width: 40%;
+  max-width: 40%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding-top: 80px;
+  box-sizing: border-box;
+`
+
+const Header = styled.div`
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 120%;
+  flex-wrap: wrap;
+`
+
+const Brand = styled.span``
+
+const Logo = styled.div`
+  display: flex;
+  align-items: center;
+
+  ${Brand} {
+    margin: 0 1ch;
+  }
+
+  a {
+    text-decoration: none;
+  }
+`
+
+const Input = styled.input`
+  margin: 1ch 0;
+  display: flex !important;
+`
 
 export const App = () => {
-  const [editor, setEditor] = useState(undefined)
-  const [xml, setXML] = useState()
-  const [dtdResults, setDtdResults] = useState()
-  const [schematronResults, setSchematronResults] = useState()
+  const [error, setError] = useState(undefined)
+  const [xml, setXML] = useState(undefined)
+  const [annotations, setAnnotations] = useState([])
 
-  const debouncedXML = useDebounce(xml, 1000)
-
-  const onDrop = useCallback(
-    acceptedFiles => {
-      if (acceptedFiles.length) {
-        editor.setOption('placeholder', 'Formatting XML…')
-        editor.setValue('')
-
-        format(acceptedFiles[0]).then(xml => {
-          editor.setValue(xml)
-          editor.setOption('placeholder', placeholder)
-        })
-      }
+  const addAnnotations = useCallback(
+    newAnnotations => {
+      setAnnotations(annotations => [...annotations, ...newAnnotations])
     },
-    [editor]
+    [setAnnotations]
   )
 
-  const { getInputProps } = useDropzone({
-    accept: '.xml',
-    multiple: false,
-    noClick: true,
-    onDrop,
-  })
+  const editorRef = useRef()
 
   useEffect(() => {
-    if (debouncedXML) {
-      editor.performLint()
-    }
-  }, [debouncedXML, editor])
+    editor.setOption('lint', {
+      getAnnotations: () => annotations,
+    })
 
-  const getAnnotations = useCallback(
-    (source, updateLinting) => {
-      updateLinting([])
-
-      setDtdResults(null)
-
-      setSchematronResults(null)
-
-      if (!source) {
-        return
-      }
-
-      setDtdResults({
-        running: true,
-      })
-
-      setSchematronResults({
-        running: true,
-      })
-
-      const annotations = []
-
-      const dtd = async () => {
-        const results = await validate(source, 'dtd')
-
-        setDtdResults({ ...results, ready: true })
-
-        const handleAnnotation = item => {
-          annotations.push({
-            message: item.message,
-            severity: 'error',
-            from: CodeMirror.Pos(item.line - 1, item.column),
-            to: CodeMirror.Pos(item.line - 1, item.column),
-          })
-        }
-
-        results.errors.forEach(handleAnnotation)
-      }
-
-      const schematron = async () => {
-        const { results } = await validate(source, 'schematron')
-
-        setSchematronResults({ ...results, ready: true })
-
-        const handleAnnotation = item => {
-          annotations.push({
-            message: item.description,
-            severity: item.type,
-            from: CodeMirror.Pos(item.line - 1),
-            to: CodeMirror.Pos(item.line - 1),
-          })
-        }
-
-        results.errors.forEach(handleAnnotation)
-        results.warnings.forEach(handleAnnotation)
-      }
-
-      dtd()
-        .then(schematron)
-        .then(() => {
-          updateLinting(annotations)
-        })
-    },
-    [setDtdResults, setSchematronResults]
-  )
-
-  const handleChange = useCallback(
-    editor => {
-      setXML(editor.getValue())
-    },
-    [setXML]
-  )
-
-  const editorRef = useRef(undefined)
+    editor.performLint()
+  }, [annotations])
 
   useEffect(() => {
-    if (editorRef.current && !editor) {
-      const editor = createEditor(editorRef.current, {
-        getAnnotations,
-        placeholder,
-      })
-
-      editor.on('change', handleChange)
-
-      setEditor(editor)
-
-      const params = new URLSearchParams(window.location.hash.substr(1))
-
-      if (params.get('url')) {
-        fetch(params.get('url'))
-          .then(response => response.text())
-          .then(xml => {
-            editor.setValue(xml)
-          })
-      }
+    if (editorRef.current) {
+      editorRef.current.appendChild(editor.display.wrapper)
+      editor.refresh()
     }
-  }, [editor, editorRef, getAnnotations, handleChange])
+  }, [editorRef])
 
-  const scrollTo = line => {
+  useEffect(() => {
+    // TODO: add hashchange listener?
+    const params = new URLSearchParams(window.location.search.substr(1))
+
+    if (params.get('url')) {
+      setXML(undefined)
+      // TODO: isFetching
+      editor.setOption('placeholder', 'Fetching XML…')
+
+      fetch(params.get('url'))
+        .then(response => response.text())
+        .then(xml => {
+          setXML(xml)
+        })
+    }
+  }, [setXML])
+
+  useEffect(() => {
+    if (!xml) {
+      setAnnotations([])
+    }
+  }, [xml, setAnnotations])
+
+  const scrollTo = useCallback(line => {
     if (!Number.isInteger(line)) {
       return
     }
@@ -193,36 +150,98 @@ export const App = () => {
     const height = editor.getScrollInfo().clientHeight
     const coords = editor.charCoords(pos, 'local')
     editor.scrollTo(null, (coords.top + coords.bottom - height) / 2)
-  }
+  }, [])
+
+  const onDrop = useCallback(
+    acceptedFiles => {
+      if (acceptedFiles.length) {
+        setXML(undefined)
+        editor.setOption('placeholder', 'Formatting XML…')
+
+        const body = new FormData()
+        body.set('xml', acceptedFiles[0])
+
+        fetch(`${VALIDATOR_URL}/format`, {
+          method: 'POST',
+          body,
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('There was an error')
+            }
+            return response.text()
+          })
+          .then(xml => {
+            setXML(xml)
+            editor.setOption('placeholder', placeholder)
+          })
+          .catch(error => {
+            setError(error)
+          })
+      }
+    },
+    [setXML]
+  )
+
+  useEffect(() => {
+    editor.setValue(xml || '')
+  }, [xml])
+
+  const { getInputProps } = useDropzone({
+    accept: '.xml',
+    multiple: false,
+    noClick: true,
+    onDrop,
+  })
 
   return (
     <Container>
       <Main>
         <Header>
           <Logo>
-            <img src={logo} alt={'JATS4R logo'} height={64} />
+            <a href={'https://jats4r.org/'}>
+              <img src={logo} alt={'JATS4R logo'} height={64} />
+            </a>
             <Brand>Validator</Brand>
           </Logo>
 
-          <input
+          <Input
             {...getInputProps()}
             tabIndex={1}
-            style={{ display: 'flex' }}
             onMouseDown={event => {
               event.target.value = ''
+              setXML(undefined)
             }}
           />
         </Header>
 
-        <textarea ref={editorRef} tabIndex={2} />
+        <Editor ref={editorRef} tabIndex={2} />
       </Main>
 
       <Sidebar>
-        <Validations
-          dtdResults={dtdResults}
-          schematronResults={schematronResults}
-          scrollTo={scrollTo}
-        />
+        {error && <div>{error.message}</div>}
+
+        {xml ? (
+          <div>
+            <Validations
+              title={'JATS DTD'}
+              url={`${VALIDATOR_URL}/dtd`}
+              xml={xml}
+              addAnnotations={addAnnotations}
+              scrollTo={scrollTo}
+            />
+
+            <Validations
+              title={'JATS4R Schematron'}
+              url={`${VALIDATOR_URL}/schematron`}
+              xml={xml}
+              addAnnotations={addAnnotations}
+              scrollTo={scrollTo}
+            />
+          </div>
+        ) : (
+          <Info />
+        )}
       </Sidebar>
     </Container>
   )

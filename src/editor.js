@@ -1,4 +1,5 @@
 import CodeMirror from 'codemirror'
+
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/xml/xml'
 import 'codemirror/addon/dialog/dialog'
@@ -18,31 +19,26 @@ import 'codemirror/addon/selection/active-line'
 import 'codemirror/addon/lint/lint'
 import 'codemirror/addon/lint/lint.css'
 
-export default CodeMirror
+export const placeholder = 'Enter JATS XML or choose a file above…'
 
-export const createEditor = (textarea, { getAnnotations, placeholder }) =>
-  CodeMirror.fromTextArea(textarea, {
-    mode: 'xml',
-    dragDrop: false,
-    foldGutter: true,
-    lineNumbers: true,
-    lineWrapping: true,
-    gutters: [
-      'CodeMirror-lint-markers',
-      'CodeMirror-linenumbers',
-      'CodeMirror-foldgutter',
-    ],
-    placeholder,
-    styleActiveLine: true,
-    matchTags: {
-      bothTags: true,
-    },
-    lint: {
-      async: true,
-      getAnnotations,
-      lintOnChange: false,
-    },
-    extraKeys: {
-      Tab: false,
-    },
-  })
+export const editor = CodeMirror(null, {
+  mode: 'xml',
+  readOnly: true,
+  dragDrop: false,
+  foldGutter: true,
+  lineNumbers: true,
+  lineWrapping: true,
+  gutters: [
+    'CodeMirror-lint-markers',
+    'CodeMirror-linenumbers',
+    'CodeMirror-foldgutter',
+  ],
+  placeholder,
+  styleActiveLine: true,
+  matchTags: {
+    bothTags: true,
+  },
+  extraKeys: {
+    Tab: false,
+  },
+})
