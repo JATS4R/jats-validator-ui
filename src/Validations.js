@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
 import CodeMirror from 'codemirror'
-import styled from 'styled-components'
+import React, { useEffect, useState } from 'react'
 import replace from 'react-string-replace'
+import styled from 'styled-components'
 
 const Section = styled.div`
   padding: 16px;

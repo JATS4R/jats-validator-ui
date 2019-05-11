@@ -1,10 +1,10 @@
-import { Validations } from './Validations'
-import React, { useState, useCallback, useRef, useEffect } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import logo from './logo.png'
 import styled from 'styled-components'
-import { Info } from './Info'
 import { editor, placeholder } from './editor'
+import { Info } from './Info'
+import logo from './logo.png'
+import { Validations } from './Validations'
 
 const VALIDATOR_URL = 'https://jats-validator.onrender.com'
 

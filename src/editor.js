@@ -1,7 +1,4 @@
 import CodeMirror from 'codemirror'
-
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/mode/xml/xml'
 import 'codemirror/addon/dialog/dialog'
 import 'codemirror/addon/dialog/dialog.css'
 import 'codemirror/addon/display/placeholder'
@@ -13,11 +10,13 @@ import 'codemirror/addon/fold/xml-fold'
 import 'codemirror/addon/hint/show-hint'
 import 'codemirror/addon/hint/show-hint.css'
 import 'codemirror/addon/hint/xml-hint'
+import 'codemirror/addon/lint/lint'
+import 'codemirror/addon/lint/lint.css'
 import 'codemirror/addon/search/search'
 import 'codemirror/addon/search/searchcursor'
 import 'codemirror/addon/selection/active-line'
-import 'codemirror/addon/lint/lint'
-import 'codemirror/addon/lint/lint.css'
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/mode/xml/xml'
 
 export const placeholder = 'Enter JATS XML or choose a file above…'
 
