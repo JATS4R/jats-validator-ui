@@ -85,6 +85,7 @@ const Form = styled.form`
   display: flex;
   align-items: center;
   padding: 16px;
+  margin: 0;
 `
 
 export const App = () => {
