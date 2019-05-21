@@ -6,6 +6,7 @@ import logo from './logo.png'
 import { Validations } from './Validations'
 
 const VALIDATOR_URL = 'https://jats-validator.now.sh'
+const VALIDATOR_URL = 'http://localhost:3000'
 
 const Container = styled.div`
   display: flex;
@@ -181,10 +182,17 @@ export const App = () => {
           method: 'POST',
           body,
         })
-          .then(response => {
+          .then(async response => {
             if (!response.ok) {
+              if (response.status === 422) {
+                const data = await response.json()
+
+                throw new Error('ERROR: ' + data.error)
+              }
+
               throw new Error('There was an error')
             }
+
             return response.text()
           })
           .then(xml => {

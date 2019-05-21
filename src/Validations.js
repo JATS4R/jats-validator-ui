@@ -11,7 +11,7 @@ const Header = styled.div`
   margin-bottom: 8px;
   background: #35b47e;
   color: white;
-  padding: 4px 8px;
+  padding: 8px;
 `
 
 const Summary = styled.summary`
