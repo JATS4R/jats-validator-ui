@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useDropzone } from 'react-dropzone'
 import styled from 'styled-components'
-import { editor, placeholder } from './editor'
+import { editor } from './editor'
 import { Info } from './Info'
 import logo from './logo.png'
 import { Validations } from './Validations'
@@ -79,13 +78,20 @@ const Logo = styled.div`
 
 const Input = styled.input`
   margin: 1ch 0;
-  display: flex !important;
+`
+
+const Message = styled.div`
+  padding: 16px 32px;
 `
 
 export const App = () => {
   const [error, setError] = useState(undefined)
+  const [formatting, setFormatting] = useState(false)
   const [xml, setXML] = useState(undefined)
   const [annotations, setAnnotations] = useState([])
+
+  const editorRef = useRef(undefined)
+  const inputRef = useRef(undefined)
 
   const addAnnotations = useCallback(
     newAnnotations => {
@@ -93,8 +99,6 @@ export const App = () => {
     },
     [setAnnotations]
   )
-
-  const editorRef = useRef()
 
   useEffect(() => {
     editor.setOption('lint', {
@@ -105,28 +109,34 @@ export const App = () => {
   }, [annotations])
 
   useEffect(() => {
+    editor.on('change', editor => {
+      setXML(editor.getValue())
+    })
+  }, [])
+
+  useEffect(() => {
     if (editorRef.current) {
       editorRef.current.appendChild(editor.display.wrapper)
       editor.refresh()
     }
-  }, [editorRef])
+  }, [editorRef.current])
 
   useEffect(() => {
     // TODO: add hashchange listener?
     const params = new URLSearchParams(window.location.search.substr(1))
 
     if (params.get('url')) {
-      setXML(undefined)
-      // TODO: isFetching
-      editor.setOption('placeholder', 'Fetching XML…')
+      editor.setValue('')
+      setFormatting(true)
 
       fetch(params.get('url'))
         .then(response => response.text())
         .then(xml => {
-          setXML(xml)
+          editor.setValue(xml)
+          setFormatting(false)
         })
     }
-  }, [setXML])
+  }, [setFormatting, setXML])
 
   useEffect(() => {
     if (!xml) {
@@ -152,14 +162,18 @@ export const App = () => {
     editor.scrollTo(null, (coords.top + coords.bottom - height) / 2)
   }, [])
 
-  const onDrop = useCallback(
-    acceptedFiles => {
-      if (acceptedFiles.length) {
-        setXML(undefined)
-        editor.setOption('placeholder', 'Formatting XML…')
+  const validate = useCallback(
+    event => {
+      event.preventDefault()
+
+      const input = inputRef.current
+
+      if (input.files.length) {
+        editor.setValue('')
+        setFormatting(true)
 
         const body = new FormData()
-        body.set('xml', acceptedFiles[0])
+        body.set('xml', input.files[0])
 
         fetch(`${VALIDATOR_URL}/format`, {
           method: 'POST',
@@ -172,27 +186,16 @@ export const App = () => {
             return response.text()
           })
           .then(xml => {
-            setXML(xml)
-            editor.setOption('placeholder', placeholder)
+            editor.setValue(xml)
+            setFormatting(false)
           })
           .catch(error => {
             setError(error)
           })
       }
     },
-    [setXML]
+    [inputRef, setError, setFormatting]
   )
-
-  useEffect(() => {
-    editor.setValue(xml || '')
-  }, [xml])
-
-  const { getInputProps } = useDropzone({
-    accept: '.xml',
-    multiple: false,
-    noClick: true,
-    onDrop,
-  })
 
   return (
     <Container>
@@ -205,43 +208,49 @@ export const App = () => {
             <Brand>Validator</Brand>
           </Logo>
 
-          <Input
-            {...getInputProps()}
-            tabIndex={1}
-            onMouseDown={event => {
-              event.target.value = ''
-              setXML(undefined)
-            }}
-          />
+          <form onSubmit={validate}>
+            <Input ref={inputRef} type={'file'} tabIndex={1} accept={'.xml'} />
+            <button type={'submit'}>Validate</button>
+          </form>
         </Header>
 
-        <Editor ref={editorRef} tabIndex={2} />
+        {editor.getValue() ? <Editor ref={editorRef} tabIndex={2} /> : <Info />}
       </Main>
 
       <Sidebar>
-        {error && <div>{error.message}</div>}
+        {(() => {
+          if (error) {
+            return <Message>{error.message}</Message>
+          }
 
-        {xml ? (
-          <div>
-            <Validations
-              title={'JATS DTD'}
-              url={`${VALIDATOR_URL}/dtd`}
-              xml={xml}
-              addAnnotations={addAnnotations}
-              scrollTo={scrollTo}
-            />
+          if (formatting) {
+            return <Message>Formatting XML…</Message>
+          }
 
-            <Validations
-              title={'JATS4R Schematron'}
-              url={`${VALIDATOR_URL}/schematron`}
-              xml={xml}
-              addAnnotations={addAnnotations}
-              scrollTo={scrollTo}
-            />
-          </div>
-        ) : (
-          <Info />
-        )}
+          if (!xml) {
+            return null
+          }
+
+          return (
+            <div>
+              <Validations
+                title={'JATS DTD'}
+                url={`${VALIDATOR_URL}/dtd`}
+                xml={xml}
+                addAnnotations={addAnnotations}
+                scrollTo={scrollTo}
+              />
+
+              <Validations
+                title={'JATS4R Schematron'}
+                url={`${VALIDATOR_URL}/schematron`}
+                xml={xml}
+                addAnnotations={addAnnotations}
+                scrollTo={scrollTo}
+              />
+            </div>
+          )
+        })()}
       </Sidebar>
     </Container>
   )

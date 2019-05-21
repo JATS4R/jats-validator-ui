@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 const Container = styled.div`
   padding: 0 16px;
-  margin: 20px 32px;
+  margin: 0 16px;
   line-height: 1.5;
   border: 4px solid #add257;
   color: #333;
@@ -20,8 +20,8 @@ const Container = styled.div`
 export const Info = () => (
   <Container>
     <p>
-      The JATS4R validator will validate an XML document against the appropriate
-      JATS DTD (NISO JATS version{' '}
+      This JATS4R validator will validate an XML document against the
+      appropriate JATS DTD (NISO JATS version{' '}
       <a href="https://jats.nlm.nih.gov/1.0/">1.0</a>,{' '}
       <a href="https://jats.nlm.nih.gov/1.1/">1.1</a> or{' '}
       <a href="https://jats.nlm.nih.gov/1.2/">1.2</a>), plus recommendations
@@ -35,12 +35,12 @@ export const Info = () => (
 
     <p>
       The source code (MIT-licensed where applicable) is available for{' '}
-      <a href="https://github.com/JATS4R/jats-validator">
-        the validator web service
-      </a>
-      ,{' '}
       <a href="https://github.com/JATS4R/jats-validator-ui">
         this user interface
+      </a>
+      ,{' '}
+      <a href="https://github.com/JATS4R/jats-validator">
+        the validator web service
       </a>
       ,{' '}
       <a href="https://github.com/JATS4R/jats-schematrons">

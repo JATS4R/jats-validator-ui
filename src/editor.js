@@ -1,7 +1,6 @@
 import CodeMirror from 'codemirror'
 import 'codemirror/addon/dialog/dialog'
 import 'codemirror/addon/dialog/dialog.css'
-import 'codemirror/addon/display/placeholder'
 import 'codemirror/addon/edit/matchtags'
 import 'codemirror/addon/fold/foldcode'
 import 'codemirror/addon/fold/foldgutter'
@@ -18,8 +17,6 @@ import 'codemirror/addon/selection/active-line'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/xml/xml'
 
-export const placeholder = 'Enter JATS XML or choose a file above…'
-
 export const editor = CodeMirror(null, {
   mode: 'xml',
   readOnly: true,
@@ -32,7 +29,6 @@ export const editor = CodeMirror(null, {
     'CodeMirror-linenumbers',
     'CodeMirror-foldgutter',
   ],
-  placeholder,
   styleActiveLine: true,
   matchTags: {
     bothTags: true,
