@@ -6,7 +6,7 @@ import { Info } from './Info'
 import logo from './logo.png'
 import { Validations } from './Validations'
 
-const VALIDATOR_URL = 'https://jats-validator.onrender.com'
+const VALIDATOR_URL = 'https://jats-validator.now.sh/'
 
 const Container = styled.div`
   display: flex;
