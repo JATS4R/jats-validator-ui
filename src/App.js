@@ -48,12 +48,12 @@ const Sidebar = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  padding-top: 80px;
   box-sizing: border-box;
+  padding: 24px 8px;
 `
 
 const Header = styled.div`
-  padding: 16px;
+  padding: 16px 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -76,12 +76,14 @@ const Logo = styled.div`
   }
 `
 
-const Input = styled.input`
-  margin: 1ch 0;
+const Message = styled.div`
+  padding: 16px;
 `
 
-const Message = styled.div`
-  padding: 16px 32px;
+const Form = styled.form`
+  display: flex;
+  align-items: center;
+  padding: 16px;
 `
 
 export const App = () => {
@@ -119,7 +121,7 @@ export const App = () => {
       editorRef.current.appendChild(editor.display.wrapper)
       editor.refresh()
     }
-  }, [editorRef.current])
+  }, [editorRef.current]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     // TODO: add hashchange listener?
@@ -208,10 +210,10 @@ export const App = () => {
             <Brand>Validator</Brand>
           </Logo>
 
-          <form onSubmit={validate}>
-            <Input ref={inputRef} type={'file'} tabIndex={1} accept={'.xml'} />
+          <Form onSubmit={validate}>
+            <input ref={inputRef} type={'file'} tabIndex={1} accept={'.xml'} />
             <button type={'submit'}>Validate</button>
-          </form>
+          </Form>
         </Header>
 
         {editor.getValue() ? <Editor ref={editorRef} tabIndex={2} /> : <Info />}

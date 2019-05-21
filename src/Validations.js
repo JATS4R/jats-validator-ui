@@ -1,6 +1,5 @@
 import CodeMirror from 'codemirror'
 import React, { useEffect, useState } from 'react'
-import replace from 'react-string-replace'
 import styled from 'styled-components'
 
 const Section = styled.div`
@@ -10,6 +9,9 @@ const Section = styled.div`
 const Header = styled.div`
   font-size: 120%;
   margin-bottom: 8px;
+  background: #35b47e;
+  color: white;
+  padding: 4px 8px;
 `
 
 const Summary = styled.summary`
@@ -28,14 +30,14 @@ const Message = styled.div`
 const Validation = styled.div`
   cursor: pointer;
   font-size: 90%;
-  background: none;
+  background: white;
   transition: 0.2s transform;
 
   margin-bottom: 3px;
   box-shadow: 0 1px 4px #ddd;
 
   &:hover {
-    transform: translateX(-16px);
+    transform: translateX(-24px);
   }
 
   & ${Message} {
@@ -53,15 +55,7 @@ const hasError = results => {
   }
 }
 
-const formatMessage = message => {
-  const text = message.replace(/^ERROR: /, '')
-
-  return replace(text, /(https?:\/\/[^\s,]+)/, match => (
-    <a href={match} target={'_blank'}>
-      {match}
-    </a>
-  ))
-}
+const formatMessage = message => message.replace(/^\w+:\s+/, '')
 
 const ValidationGroup = ({ results, scrollTo, color, text }) => {
   if (!results) {
@@ -168,7 +162,7 @@ export const Validations = ({ url, xml, addAnnotations, title, scrollTo }) => {
           )}
         </div>
       ) : (
-        <div>Validating…</div>
+        <div>Validating XML…</div>
       )}
     </Section>
   )

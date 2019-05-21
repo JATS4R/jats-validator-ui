@@ -2,10 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 
 const Container = styled.div`
-  padding: 0 16px;
+  padding: 0 24px;
   margin: 0 16px;
   line-height: 1.5;
-  border: 4px solid #add257;
   color: #333;
   max-height: 100%;
   overflow-y: auto;
