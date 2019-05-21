@@ -132,6 +132,7 @@ export const App = () => {
     if (params.get('url')) {
       editor.setValue('')
       setFormatting(true)
+      setError(undefined)
 
       fetch(params.get('url'))
         .then(response => response.text())
@@ -175,6 +176,7 @@ export const App = () => {
       if (input.files.length) {
         editor.setValue('')
         setFormatting(true)
+        setError(undefined)
 
         const body = new FormData()
         body.set('xml', input.files[0])
