@@ -81,12 +81,14 @@ const ValidationGroup = ({ results, scrollTo, color, text }) => {
   )
 }
 
+const abortController = new AbortController()
+
 export const Validations = ({ url, xml, addAnnotations, title, scrollTo }) => {
   const [error, setError] = useState(false)
   const [results, setResults] = useState(undefined)
 
   useEffect(() => {
-    // TODO: cancel existing requests
+    abortController.abort()
 
     setResults(undefined)
     setError(undefined)
@@ -97,6 +99,7 @@ export const Validations = ({ url, xml, addAnnotations, title, scrollTo }) => {
     fetch(url, {
       method: 'POST',
       body,
+      signal: abortController.signal,
     })
       .then(response => {
         if (!response.ok) {
@@ -125,8 +128,14 @@ export const Validations = ({ url, xml, addAnnotations, title, scrollTo }) => {
         setResults({ errors, warnings })
       })
       .catch(error => {
-        setError(error)
+        if (error.name !== 'AbortError') {
+          setError(error)
+        }
       })
+
+    return () => {
+      abortController.abort()
+    }
   }, [xml, addAnnotations, setResults, url])
 
   return (
