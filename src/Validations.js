@@ -1,5 +1,5 @@
 import CodeMirror from 'codemirror'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 const Section = styled.div`
@@ -81,14 +81,18 @@ const ValidationGroup = ({ results, scrollTo, color, text }) => {
   )
 }
 
-const abortController = new AbortController()
-
 export const Validations = ({ url, xml, addAnnotations, title, scrollTo }) => {
   const [error, setError] = useState(false)
   const [results, setResults] = useState(undefined)
 
+  const abortRef = useRef(new AbortController())
+
   useEffect(() => {
-    abortController.abort()
+    if (abortRef.current) {
+      abortRef.current.abort()
+    }
+
+    abortRef.current = new AbortController()
 
     setResults(undefined)
     setError(undefined)
@@ -99,7 +103,7 @@ export const Validations = ({ url, xml, addAnnotations, title, scrollTo }) => {
     fetch(url, {
       method: 'POST',
       body,
-      signal: abortController.signal,
+      signal: abortRef.current.signal,
     })
       .then(response => {
         if (!response.ok) {
@@ -134,7 +138,9 @@ export const Validations = ({ url, xml, addAnnotations, title, scrollTo }) => {
       })
 
     return () => {
-      abortController.abort()
+      if (abortRef.current) {
+        abortRef.current.abort()
+      }
     }
   }, [xml, addAnnotations, setResults, url])
 
