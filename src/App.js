@@ -93,7 +93,6 @@ export const App = () => {
   const [xml, setXML] = useState(undefined)
   const [annotations, setAnnotations] = useState([])
 
-  const editorRef = useRef(undefined)
   const inputRef = useRef(undefined)
 
   const addAnnotations = useCallback(
@@ -116,13 +115,6 @@ export const App = () => {
       setXML(editor.getValue())
     })
   }, [])
-
-  useEffect(() => {
-    if (editorRef.current) {
-      editorRef.current.appendChild(editor.display.wrapper)
-      editor.refresh()
-    }
-  }, [editorRef.current]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     // TODO: add hashchange listener?
@@ -148,6 +140,13 @@ export const App = () => {
     }
   }, [xml, setAnnotations])
 
+  const attachEditor = useCallback(node => {
+    if (node) {
+      node.appendChild(editor.display.wrapper)
+      editor.refresh()
+    }
+  }, [])
+
   const scrollTo = useCallback(line => {
     if (!Number.isInteger(line)) {
       return
@@ -166,47 +165,55 @@ export const App = () => {
     editor.scrollTo(null, (coords.top + coords.bottom - height) / 2)
   }, [])
 
-  const validate = useCallback(
-    event => {
-      event.preventDefault()
+  const onClick = useCallback(event => {
+    event.currentTarget.value = ''
+    editor.setValue('')
+  }, [])
 
-      const input = inputRef.current
+  const validate = useCallback(() => {
+    const input = inputRef.current
 
-      if (input.files.length) {
-        editor.setValue('')
-        setFormatting(true)
-        setError(undefined)
+    if (input.files.length) {
+      editor.setValue('')
+      setFormatting(true)
+      setError(undefined)
 
-        const body = new FormData()
-        body.set('xml', input.files[0])
+      const body = new FormData()
+      body.set('xml', input.files[0])
 
-        fetch(`${VALIDATOR_URL}/format`, {
-          method: 'POST',
-          body,
-        })
-          .then(async response => {
-            if (!response.ok) {
-              if (response.status === 422) {
-                const data = await response.json()
+      fetch(`${VALIDATOR_URL}/format`, {
+        method: 'POST',
+        body,
+      })
+        .then(async response => {
+          if (!response.ok) {
+            if (response.status === 422) {
+              const data = await response.json()
 
-                throw new Error('ERROR: ' + data.error)
-              }
-
-              throw new Error('There was an error')
+              throw new Error('ERROR: ' + data.error)
             }
 
-            return response.text()
-          })
-          .then(xml => {
-            editor.setValue(xml)
-            setFormatting(false)
-          })
-          .catch(error => {
-            setError(error)
-          })
-      }
+            throw new Error('There was an error')
+          }
+
+          return response.text()
+        })
+        .then(xml => {
+          editor.setValue(xml)
+          setFormatting(false)
+        })
+        .catch(error => {
+          setError(error)
+        })
+    }
+  }, [inputRef, setError, setFormatting])
+
+  const onSubmit = useCallback(
+    event => {
+      event.preventDefault()
+      validate()
     },
-    [inputRef, setError, setFormatting]
+    [validate]
   )
 
   return (
@@ -220,13 +227,31 @@ export const App = () => {
             <Brand>Validator</Brand>
           </Logo>
 
-          <Form onSubmit={validate}>
-            <input ref={inputRef} type={'file'} tabIndex={1} accept={'.xml'} />
-            <button type={'submit'}>Validate</button>
+          <Form onSubmit={onSubmit}>
+            <input
+              ref={inputRef}
+              type={'file'}
+              tabIndex={1}
+              accept={'.xml'}
+              onChange={validate}
+              onClick={onClick}
+            />
+            <button
+              type={'submit'}
+              style={{
+                visibility: xml ? 'visible' : 'hidden',
+              }}
+            >
+              Revalidate
+            </button>
           </Form>
         </Header>
 
-        {editor.getValue() ? <Editor ref={editorRef} tabIndex={2} /> : <Info />}
+        {editor.getValue() ? (
+          <Editor ref={attachEditor} tabIndex={2} />
+        ) : (
+          <Info />
+        )}
       </Main>
 
       <Sidebar>
