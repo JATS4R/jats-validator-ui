@@ -81,7 +81,14 @@ const ValidationGroup = ({ results, scrollTo, color, text }) => {
   )
 }
 
-export const Validations = ({ url, xml, addAnnotations, title, scrollTo }) => {
+export const Validations = ({
+  url,
+  xml,
+  addAnnotations,
+  title,
+  scrollTo,
+  schematron,
+}) => {
   const [error, setError] = useState(false)
   const [results, setResults] = useState(undefined)
 
@@ -98,7 +105,11 @@ export const Validations = ({ url, xml, addAnnotations, title, scrollTo }) => {
     setError(undefined)
 
     const body = new FormData()
-    body.set('xml', xml)
+    body.set('xml', new File([xml], 'input.xml'))
+
+    if (schematron) {
+      body.set('schematron', schematron)
+    }
 
     fetch(url, {
       method: 'POST',
@@ -142,7 +153,7 @@ export const Validations = ({ url, xml, addAnnotations, title, scrollTo }) => {
         abortRef.current.abort()
       }
     }
-  }, [xml, addAnnotations, setResults, url])
+  }, [xml, addAnnotations, url, schematron])
 
   return (
     <Section>
