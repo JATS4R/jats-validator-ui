@@ -281,6 +281,7 @@ export const App = () => {
               <Validations
                 title={'JATS4R Schematron'}
                 url={`${VALIDATOR_URL}/schematron`}
+                schematron={'jats4r'}
                 xml={xml}
                 addAnnotations={addAnnotations}
                 scrollTo={scrollTo}
