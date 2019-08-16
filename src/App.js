@@ -96,12 +96,9 @@ export const App = () => {
 
   const inputRef = useRef(undefined)
 
-  const addAnnotations = useCallback(
-    newAnnotations => {
-      setAnnotations(annotations => [...annotations, ...newAnnotations])
-    },
-    [setAnnotations]
-  )
+  const addAnnotations = useCallback(newAnnotations => {
+    setAnnotations(annotations => [...annotations, ...newAnnotations])
+  }, [])
 
   useEffect(() => {
     editor.setOption('lint', {
@@ -133,13 +130,13 @@ export const App = () => {
           setFormatting(false)
         })
     }
-  }, [setFormatting, setXML])
+  }, [])
 
   useEffect(() => {
     if (!xml) {
       setAnnotations([])
     }
-  }, [xml, setAnnotations])
+  }, [xml])
 
   const attachEditor = useCallback(node => {
     if (node) {
@@ -172,6 +169,7 @@ export const App = () => {
   }, [])
 
   const validate = useCallback(() => {
+    /** @type HTMLInputElement */
     const input = inputRef.current
 
     if (input.files.length) {
@@ -207,7 +205,7 @@ export const App = () => {
           setError(error)
         })
     }
-  }, [inputRef, setError, setFormatting])
+  }, [inputRef])
 
   const onSubmit = useCallback(
     event => {
@@ -223,7 +221,7 @@ export const App = () => {
         <Header>
           <Logo>
             <a href={'https://jats4r.org/'}>
-              <img src={logo} alt={'JATS4R logo'} height={64} />
+              <img src={logo} alt={'JATS4R'} height={64} />
             </a>
             <Brand>Validator</Brand>
           </Logo>
