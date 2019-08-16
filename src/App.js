@@ -6,7 +6,7 @@ import logo from './logo.png'
 import { Validations } from './Validations'
 
 // const VALIDATOR_URL = 'https://jats-validator.now.sh'
-const VALIDATOR_URL = 'https://jats-validator.onrender.com/'
+const VALIDATOR_URL = 'https://jats-validator.onrender.com'
 
 const Container = styled.div`
   display: flex;
@@ -182,7 +182,7 @@ export const App = () => {
       const body = new FormData()
       body.set('xml', input.files[0])
 
-      fetch(`${VALIDATOR_URL}/format`, {
+      fetch(`${VALIDATOR_URL}/format/`, {
         method: 'POST',
         body,
       })
@@ -273,7 +273,7 @@ export const App = () => {
             <div>
               <Validations
                 title={'JATS DTD'}
-                url={`${VALIDATOR_URL}/dtd`}
+                url={`${VALIDATOR_URL}/dtd/`}
                 xml={xml}
                 addAnnotations={addAnnotations}
                 scrollTo={scrollTo}
@@ -281,7 +281,7 @@ export const App = () => {
 
               <Validations
                 title={'JATS4R Schematron'}
-                url={`${VALIDATOR_URL}/schematron`}
+                url={`${VALIDATOR_URL}/schematron/`}
                 schematron={'jats4r'}
                 xml={xml}
                 addAnnotations={addAnnotations}
