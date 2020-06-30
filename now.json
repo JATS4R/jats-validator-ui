@@ -1,5 +1,4 @@
 {
-  "name": "jats-validator-ui",
   "version": 2,
   "alias": "validator.jats4r.org",
   "scope": "jats4r",
