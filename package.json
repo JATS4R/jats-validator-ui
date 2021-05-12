@@ -4,7 +4,7 @@
   "private": true,
   "license": "MIT",
   "dependencies": {
-    "codemirror": "^5.55.0",
+    "codemirror": "^5.58.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",
