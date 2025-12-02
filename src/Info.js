@@ -22,8 +22,9 @@ export const Info = () => (
       This JATS4R validator will validate an XML document against the
       appropriate JATS DTD (NISO JATS version{' '}
       <a href="https://jats.nlm.nih.gov/1.0/">1.0</a>,{' '}
-      <a href="https://jats.nlm.nih.gov/1.1/">1.1</a> or{' '}
-      <a href="https://jats.nlm.nih.gov/1.2/">1.2</a>), plus recommendations
+      <a href="https://jats.nlm.nih.gov/1.1/">1.1</a>,{' '}
+      <a href="https://jats.nlm.nih.gov/1.2/">1.2</a> or{' '}
+      <a href="https://jats.nlm.nih.gov/1.3/">1.3</a>), plus recommendations
       that have been{' '}
       <a href="https://jats4r.org/recommendations-list">
         {' '}
