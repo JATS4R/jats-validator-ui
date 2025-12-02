@@ -135,12 +135,15 @@ export const Validations = ({
         }
 
         const errors = items.errors ? items.errors.map(buildAnnotation) : []
+        const infos = items.infos
+          ? items.infos.map(buildAnnotation)
+          : []
         const warnings = items.warnings
           ? items.warnings.map(buildAnnotation)
           : []
 
-        addAnnotations([...errors, ...warnings])
-        setResults({ errors, warnings })
+        addAnnotations([...errors, ...infos, ...warnings])
+        setResults({ errors, infos, warnings })
       })
       .catch(error => {
         if (error.name !== 'AbortError') {
@@ -184,6 +187,15 @@ export const Validations = ({
               scrollTo={scrollTo}
               color={'orange'}
               text={{ singular: 'warning', plural: 'warnings' }}
+            />
+          )}
+
+          {results.infos.length > 0 && (
+            <ValidationGroup
+              results={results.infos}
+              scrollTo={scrollTo}
+              color={'#00c'}
+              text={{ singular: 'info', plural: 'infos' }}
             />
           )}
         </div>
