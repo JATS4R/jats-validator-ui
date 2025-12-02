@@ -6,7 +6,8 @@ import logo from './logo.png'
 import { Validations } from './Validations'
 
 // const VALIDATOR_URL = 'https://jats-validator.now.sh'
-const VALIDATOR_URL = 'https://jats-validator.onrender.com'
+// const VALIDATOR_URL = 'http://localhost:3001'
+const VALIDATOR_URL = 'https://jats-validator.hubmed.org'
 
 const Container = styled.div`
   display: flex;
