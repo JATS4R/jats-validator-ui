@@ -39,7 +39,7 @@ export const Info = () => (
         this user interface
       </a>
       ,{' '}
-      <a href="https://github.com/JATS4R/jats-validator">
+      <a href="https://github.com/JATS4R/jats-validator-docker">
         the validator web service
       </a>
       ,{' '}
