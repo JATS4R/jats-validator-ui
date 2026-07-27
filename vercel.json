@@ -1,11 +1,7 @@
 {
-  "version": 2,
-  "alias": "validator.jats4r.org",
-  "scope": "jats4r",
-  "public": true,
-  "builds": [
-    { "src": "package.json", "use": "@now/static-build", "config": { "distDir": "build" } }
-  ],
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "outputDirectory": "build",
   "routes": [
     { "src": "/static/(.*)", "headers": { "cache-control": "s-maxage=31536000,immutable" }, "dest": "/static/$1" },
     { "src": "/favicon.ico", "dest": "/favicon.ico" },
